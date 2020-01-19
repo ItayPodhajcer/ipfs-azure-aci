@@ -1,0 +1,43 @@
+apiVersion: '2018-10-01'
+location: 'eastus2'
+name: aci-ipfs-example
+properties:
+  containers:
+  - name: ipfs
+    properties:
+      image: ipfs/go-ipfs
+      ports:
+      - port: 4001
+      - port: 5001
+      - port: 8080
+      resources:
+        requests:
+          cpu: 1.0
+          memoryInGB: 1.5
+      volumeMounts:
+      - mountPath: /data/ipfs
+        name: ipfsdatavolume
+      - mountPath: /export
+        name: ipfsexportvolume
+  osType: Linux
+  restartPolicy: Always
+  ipAddress:
+    type: Public
+    ports:
+    - port: 4001
+    - port: 5001
+    - port: 8080
+    dnsNameLabel: ipfs-example
+  volumes:
+  - name: ipfsdatavolume
+    azureFile:
+      sharename: ipfsdata
+      storageAccountName: <Storage account name>
+      storageAccountKey: <Storage account key>
+  - name: ipfsexportvolume
+    azureFile:
+      sharename: ipfsexport
+      storageAccountName: <Storage account name>
+      storageAccountKey: <Storage account key>
+tags: {}
+type: Microsoft.ContainerInstance/containerGroups
